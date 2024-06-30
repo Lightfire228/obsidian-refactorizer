@@ -61,6 +61,16 @@ export const openFilesToRight = async (app: App, files: TFile[]) => {
     }
 }
 
+export const convertBacklinksToMD = (files: TFile[]) => 
+    files
+        .map(f => `[[${f.basename}]]`)
+        .join('\n')
+;
+
+export const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+}
+
 const _containsFile = (list: string[] | TFile[], val: string | TFile): boolean => {
 
     const l = 
