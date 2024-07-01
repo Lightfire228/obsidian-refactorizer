@@ -10,7 +10,10 @@ import {
     filterForwardLinks, 
     getActiveFile,
     copyToClipboard,
-    convertBacklinksToMD
+    convertBacklinksToMD,
+    getInbox,
+    moveFile,
+    getActiveLeaf
 } from 'src/refactorizer';
 
 export const commands = (app: App): Command[] => [
@@ -40,6 +43,20 @@ export const commands = (app: App): Command[] => [
         name: 'Open backlinks in separate tabs (excluding forward links)',
         callback: async () => {
             await openBacklinksTabs(app, true);
+        }
+    },
+    {
+        id:   'open-inbox-as-tabs',
+        name: 'Open Inbox in separate tabs',
+        callback: async () => {
+            await openInboxTabs(app);
+        }
+    },
+    {
+        id:   'move-to-second-brain',
+        name: 'Move the active file into the Second Brain',
+        callback: async () => {
+            await moveOutOfInbox(app);
         }
     },
 ]
@@ -80,4 +97,31 @@ const copyBacklinks = async (app: App, filter?: boolean) => {
     } 
     
     copyToClipboard(convertBacklinksToMD(files));
+}
+
+const openInboxTabs = async (app: App) => {
+
+    const files = getInbox(app);
+
+    if (!files) {
+        return;
+    } 
+    
+    await openFilesToRight(app, files);
+}
+
+
+const moveOutOfInbox = async (app: App) => {
+    const active = getActiveFile(app);
+
+    if (!active) {
+        return null;
+    }
+
+    await moveFile(app, active);
+
+    const leaf = getActiveLeaf(app);
+
+    leaf?.detach();
+
 }

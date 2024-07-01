@@ -12,6 +12,10 @@ export const getActiveFile = (app: App): TFile | null =>
     app.workspace.getActiveFile()
 ;
 
+export const getActiveLeaf = (app: App): WorkspaceLeaf | null =>
+    app.workspace.getMostRecentLeaf()
+;
+
 export const getLinkedFiles = (app: App, file: TFile): TFile[] => 
     (app
         .metadataCache
@@ -26,16 +30,29 @@ const _notEmpty = <T>(value: T | null): value is T =>
     !!value
 ;
 
-export const getBacklinks = (app: App, target: TFile): TFile[] => {
-    return getAllFiles(app)
+export const getBacklinks = (app: App, target: TFile): TFile[] => 
+     getAllFiles(app)
         .filter(f =>
             _containsFile(
                 getLinkedFiles(app, f),
                 target,
             )
         )
-    ;
-}
+;
+
+
+export const getInbox = (app: App): TFile[] => 
+    getAllFiles(app)
+        // TODO: grab this from the user's config
+        .filter(f => f.path.startsWith('01 Inbox')
+    )
+;
+
+export const moveFile = async (app: App, target: TFile) => 
+    // TODO: make a setting for this and grab it from there
+    await app.fileManager.renameFile(target, `03 Second brain/${target.name}`)
+;
+
 
 export const filterForwardLinks = (app: App, backlinks: TFile[], target: TFile): TFile[] => {
     const links = getLinkedFiles(app, target);
