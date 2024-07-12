@@ -1,7 +1,9 @@
 import { 
     App, 
+    CachedMetadata, 
     TFile, 
     WorkspaceLeaf,
+    getAllTags,
 } from 'obsidian';
 
 export const getAllFiles = (app: App): TFile[] =>
@@ -24,6 +26,23 @@ export const getLinkedFiles = (app: App, file: TFile): TFile[] =>
     )
     .map(l => app.metadataCache.getFirstLinkpathDest(l.link, ''))
     .filter(_notEmpty)
+;
+
+export const getTaggedFiles = (app: App, tag: string): TFile[] => 
+    getAllFiles(app)
+        .map(f => ({
+            file:  f,
+            cache: app.metadataCache.getFileCache(f),
+        }))
+        .filter(f => 
+            (_getAllTags(f.cache) || [])
+            .indexOf(tag) > -1
+        )
+        .map(f => f.file)
+;
+
+const _getAllTags = (f: CachedMetadata | null | undefined) =>
+    (f)? getAllTags(f) : []
 ;
 
 const _notEmpty = <T>(value: T | null): value is T => 

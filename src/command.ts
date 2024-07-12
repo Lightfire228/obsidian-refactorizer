@@ -13,7 +13,8 @@ import {
     convertBacklinksToMD,
     getInbox,
     moveFile,
-    getActiveLeaf
+    getActiveLeaf,
+    getTaggedFiles
 } from 'src/refactorizer';
 
 export const commands = (app: App): Command[] => [
@@ -57,6 +58,13 @@ export const commands = (app: App): Command[] => [
         name: 'Move the active file into the Second Brain',
         callback: async () => {
             await moveOutOfInbox(app);
+        }
+    },
+    {
+        id:   'open-tag-as-tabs',
+        name: 'Open a tag in separate tabs',
+        callback: async () => {
+            await openTagAsTabs(app);
         }
     },
 ]
@@ -115,7 +123,7 @@ const moveOutOfInbox = async (app: App) => {
     const active = getActiveFile(app);
 
     if (!active) {
-        return null;
+        return;
     }
 
     await moveFile(app, active);
@@ -124,4 +132,18 @@ const moveOutOfInbox = async (app: App) => {
 
     leaf?.detach();
 
+}
+
+const openTagAsTabs = async (app: App) => {
+
+    //TODO: use a search box
+    const tag = '#raw'
+
+    const files = getTaggedFiles(app, tag);
+
+    if (!files) {
+        return;
+    } 
+    
+    await openFilesToRight(app, files);
 }
