@@ -69,7 +69,7 @@ export const getInbox = (app: App): TFile[] =>
 
 export const moveFile = async (app: App, target: TFile) => 
     // TODO: make a setting for this and grab it from there
-    await app.fileManager.renameFile(target, `03 Second brain/${target.name}`)
+    await app.fileManager.renameFile(target, `02 Second brain/${target.name}`)
 ;
 
 

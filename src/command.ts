@@ -2,6 +2,8 @@
 import {
     App,
     Command,
+    Editor,
+    MarkdownView,
 } from 'obsidian';
 
 import { 
@@ -16,6 +18,10 @@ import {
     getActiveLeaf,
     getTaggedFiles
 } from 'src/refactorizer';
+
+import {
+    insertNewLine
+} from 'src/editor';
 
 export const commands = (app: App): Command[] => [
     {
@@ -65,6 +71,13 @@ export const commands = (app: App): Command[] => [
         name: 'Open a tag in separate tabs',
         callback: async () => {
             await openTagAsTabs(app);
+        }
+    },
+    {
+        id:   'insert-line-below',
+        name: 'Insert a new line below',
+        editorCallback: (editor: Editor, view: MarkdownView) => {
+            insertNewLine(editor, view);
         }
     },
 ]
